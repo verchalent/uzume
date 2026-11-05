@@ -1,7 +1,9 @@
 {
   description = "Uzume: the toolbox environment on Fedora Kinoite, defined as a flake";
 
-  # Pins live in flake.lock. Bump one input at a time.
+  # Pins live in flake.lock. Bump one input at a time, and only to a revision at least
+  # 8 days old (supply-chain cooldown, same rule as zsh-prompt-evolution), e.g.:
+  #   nix flake lock --override-input nixpkgs github:NixOS/nixpkgs/<rev>
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     # The prompt/shell experience lives in its own flake; this repo only consumes it.
