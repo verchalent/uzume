@@ -5,7 +5,7 @@
 # disables) and never change unless this file does.
 # To update one: bump `version`, fix the URL, and replace the hash
 # (sha256 of the zip, as an SRI string). Only take releases >= 8 days old.
-{ pkgs }:
+{ pkgs, ... }:
 let
   ublockLite =
     let
@@ -26,6 +26,8 @@ let
 
   extensions = [ ublockLite ];
 in
-pkgs.ungoogled-chromium.override {
-  commandLineArgs = "--load-extension=${pkgs.lib.concatStringsSep "," extensions}";
-}
+[
+  (pkgs.ungoogled-chromium.override {
+    commandLineArgs = "--load-extension=${pkgs.lib.concatStringsSep "," extensions}";
+  })
+]
