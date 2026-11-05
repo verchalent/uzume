@@ -25,9 +25,28 @@ let
       '';
 
   extensions = [ ublockLite ];
+
+  chromium = pkgs.ungoogled-chromium;
+
+  # Chromium writes an unpacked extension's indexed rulesets into <ext>/_metadata, so the
+  # read-only /nix/store copy fails with "Internal error while parsing rules". The wrapper
+  # copies each extension (once per version) to a writable, namespaced dir and loads that.
+  wrapper = pkgs.writeShellScriptBin "chromium" ''
+    ext_root="''${XDG_DATA_HOME:-$HOME/.local/share}/uzume/extensions"
+    load=""
+    for src in ${pkgs.lib.concatStringsSep " " extensions}; do
+      dest="$ext_root/$(basename "$src")"
+      if [ ! -d "$dest" ]; then
+        mkdir -p "$dest.tmp"
+        cp -rL --no-preserve=mode "$src"/. "$dest.tmp"
+        mv "$dest.tmp" "$dest"
+      fi
+      load="''${load:+$load,}$dest"
+    done
+    exec ${chromium}/bin/chromium --load-extension="$load" "$@"
+  '';
 in
 [
-  (pkgs.ungoogled-chromium.override {
-    commandLineArgs = "--load-extension=${pkgs.lib.concatStringsSep "," extensions}";
-  })
+  (pkgs.lib.hiPrio wrapper) # wins the bin/chromium conflict
+  chromium # desktop entry, icons
 ]
