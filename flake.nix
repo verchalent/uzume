@@ -1,5 +1,5 @@
 {
-  description = "Uzume: the toolbox environment on Fedora Kinoite (jizo), defined as a flake";
+  description = "Uzume: the toolbox environment on Fedora Kinoite, defined as a flake";
 
   # Pins live in flake.lock. Bump one input at a time.
   inputs = {
