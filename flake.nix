@@ -42,6 +42,7 @@
           name = "uzume-env";
           paths = [
             zsh-prompt.packages.${pkgs.stdenv.hostPlatform.system}.default
+            (import ./modules/browser.nix { inherit pkgs; })
           ]
           ++ (with pkgs; [
             # Extra tools for this toolbox go here.
