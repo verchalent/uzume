@@ -1,0 +1,104 @@
+{
+  "nodes": {
+    "flake-utils": {
+      "inputs": {
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1793633738,
+        "narHash": "sha256-tItrb9M8eYA6WhFgmT9tpGKueri3+wRuVA952o/2xSU=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "7dcdd87373d72e7a2173e4db02e20d3d7f495cfd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-26.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs",
+        "zsh-prompt": "zsh-prompt"
+      }
+    },
+    "systems": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
+    "ttt": {
+      "inputs": {
+        "flake-utils": "flake-utils",
+        "nixpkgs": [
+          "zsh-prompt",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1792186618,
+        "narHash": "sha256-UFb5tjXQ8eTHNxFt6vKRSUGkjPlpMof0w3kUIPYRnGc=",
+        "owner": "eugenioenko",
+        "repo": "ttt",
+        "rev": "9e3adbbe3330a1764ca737eca575654d754f8ed0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "eugenioenko",
+        "repo": "ttt",
+        "type": "github"
+      }
+    },
+    "zsh-prompt": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "ttt": "ttt"
+      },
+      "locked": {
+        "lastModified": 1793906435,
+        "narHash": "sha256-w5CPmcUsddrsSDOQ6PtY7PKD1T1PCggQUXZZDPb3aX4=",
+        "owner": "verchalent",
+        "repo": "zsh-prompt-evolution",
+        "rev": "e854b0361ba70ce834501f8950d07abb5fe820f6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "verchalent",
+        "repo": "zsh-prompt-evolution",
+        "type": "github"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
