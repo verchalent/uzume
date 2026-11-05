@@ -1,6 +1,7 @@
 # uzume
 
-The Nix-defined toolbox environment for the `uzume` VM (Fedora Kinoite).
+A Nix-defined toolbox environment for an atomic Fedora system (Kinoite): a writable userland
+container whose contents come from a flake instead of manual installs.
 The shell experience itself lives in
 [zsh-prompt-evolution](https://github.com/verchalent/zsh-prompt-evolution);
 this repo consumes it and adds whatever else the toolbox needs.
