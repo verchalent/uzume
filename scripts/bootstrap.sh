@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Create (or repair) the Uzume toolbox: Nix inside, environment from this flake,
-# zsh-prompt as the default shell.
+# zsh-prompt as the default interactive shell.
 # Run on the Fedora Kinoite HOST, not inside a toolbox:  scripts/bootstrap.sh [name]
 #
 # $HOME is shared between the host and every toolbox, so this never touches
@@ -47,10 +47,22 @@ else
   nix profile install "$FLAKE"
 fi
 
-shell="$HOME/.nix-profile/bin/zsh-prompt"
-echo "==> Making $shell the login shell for $user in this container"
-grep -qxF "$shell" /etc/shells || echo "$shell" | sudo tee -a /etc/shells >/dev/null
-sudo usermod --shell "$shell" "$user"
+echo "==> Handing interactive shells over to zsh-prompt (container-local /etc/profile.d)"
+# toolbox enter starts the HOST user's login shell (it ignores the container's passwd),
+# so bash is only a trampoline: interactive login shells exec zsh-prompt.
+# Escape hatch: UZUME_NO_PROMPT=1 toolbox enter ...
+sudo tee /etc/profile.d/zz-uzume.sh >/dev/null <<'PROFILE_EOF'
+# Host terminfo (e.g. xterm-ghostty) is visible under /run/host in toolbox.
+export TERMINFO_DIRS="${TERMINFO_DIRS:+$TERMINFO_DIRS:}/run/host/usr/share/terminfo"
+case $- in
+  *i*)
+    if [ -z "${UZUME_NO_PROMPT:-}" ] && [ -z "${ZSH_PROMPT_STATE:-}" ] \
+       && [ -x "$HOME/.nix-profile/bin/zsh-prompt" ]; then
+      exec "$HOME/.nix-profile/bin/zsh-prompt"
+    fi
+    ;;
+esac
+PROFILE_EOF
 INNER_EOF
 
 toolbox run -c "$NAME" env NIX_VERSION="$NIX_VERSION" FLAKE="$FLAKE" bash -c "$INNER"

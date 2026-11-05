@@ -8,7 +8,7 @@ this repo consumes it and adds whatever else the toolbox needs.
 
 - `flake.nix`: `packages.<system>.default` = `uzume-env` (zsh-prompt plus extra tools).
 - `scripts/bootstrap.sh`: run on the Kinoite host. Creates the toolbox, installs Nix inside
-  it, installs `uzume-env`, and makes `zsh-prompt` the container's login shell.
+  it, installs `uzume-env`, and makes `zsh-prompt` the default interactive shell (a container-local `/etc/profile.d` hook; `UZUME_NO_PROMPT=1` skips it).
   Nothing in the shared `$HOME` is edited; per-container config goes in the container's `/etc`.
 
 ```sh
