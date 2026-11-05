@@ -1,21 +1,52 @@
 #!/usr/bin/env bash
 # Create (or repair) the Uzume toolbox: Nix inside, environment from this flake,
 # zsh-prompt as the default interactive shell.
-# Run on the Fedora Kinoite HOST, not inside a toolbox:  scripts/bootstrap.sh [name]
+# Run on the Fedora Kinoite HOST, not inside a toolbox:  scripts/bootstrap.sh [--replace|--update] [name]
 #
 # $HOME is shared between the host and every toolbox, so this never touches
 # dotfiles there (no installer profile edits, no ~/.config/nix). Everything that
 # must differ per toolbox lives in the container's own /etc.
 set -euo pipefail
 
-NAME="${1:-uzume}"
+MODE=ask # ask | replace | update
+NAME=uzume
+for arg in "$@"; do
+  case "$arg" in
+    --replace) MODE=replace ;;
+    --update)  MODE=update ;;
+    -h|--help) echo "usage: $0 [--replace|--update] [name]"; exit 0 ;;
+    -*)        echo "unknown option: $arg" >&2; exit 2 ;;
+    *)         NAME="$arg" ;;
+  esac
+done
 NIX_VERSION="2.35.4" # pinned installer; bump deliberately
 FLAKE="github:verchalent/uzume"
 
 command -v toolbox >/dev/null || { echo "toolbox not found: run this on the Kinoite host" >&2; exit 1; }
 
 if podman container exists "$NAME"; then
-  echo "==> Toolbox '$NAME' exists; re-applying setup"
+  if [ "$MODE" = ask ]; then
+    if [ -t 0 ]; then
+      echo "Toolbox '$NAME' already exists."
+      read -r -p "[u]pdate it in place, [r]eplace it (deletes it and its /nix), or [c]ancel? [u/r/c] " ans
+      case "$ans" in
+        r|R) MODE=replace ;;
+        u|U|"") MODE=update ;;
+        *) echo "Cancelled."; exit 0 ;;
+      esac
+    else
+      echo "Toolbox '$NAME' exists and no terminal to ask: updating in place (use --replace to recreate)"
+      MODE=update
+    fi
+  fi
+  if [ "$MODE" = replace ]; then
+    echo "==> Removing toolbox '$NAME'"
+    toolbox rm --force "$NAME"
+  fi
+fi
+
+if podman container exists "$NAME"; then
+  echo "==> Updating toolbox '$NAME' in place"
 else
   echo "==> Creating toolbox '$NAME' (stock Fedora toolbox image)"
   toolbox create --assumeyes "$NAME"
