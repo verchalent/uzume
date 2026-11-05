@@ -75,7 +75,9 @@ echo "==> Installing the Uzume environment from $FLAKE"
 if nix profile list 2>/dev/null | grep -q uzume; then
   nix profile upgrade --all
 else
-  nix profile install "$FLAKE"
+  # --no-write-lock-file: a remote flake cannot be re-locked on the client. Until flake.lock
+  # is committed in the repo, this resolves inputs unpinned (with a warning).
+  nix profile add --no-write-lock-file "$FLAKE"
 fi
 
 echo "==> Handing interactive shells over to zsh-prompt (container-local /etc/profile.d)"
