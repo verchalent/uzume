@@ -73,7 +73,7 @@ export PATH="$HOME/.nix-profile/bin:$PATH"
 
 echo "==> Installing the Uzume environment from $FLAKE"
 if nix profile list 2>/dev/null | grep -q uzume; then
-  nix profile upgrade --all
+  nix profile upgrade --all --no-write-lock-file
 else
   # --no-write-lock-file: a remote flake cannot be re-locked on the client. Until flake.lock
   # is committed in the repo, this resolves inputs unpinned (with a warning).
