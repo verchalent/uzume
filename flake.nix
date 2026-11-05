@@ -20,7 +20,19 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      forAllSystems = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+      # Unfree packages are allowed one by one, not wholesale.
+      unfree = [ "vscode" ];
+      forAllSystems =
+        f:
+        nixpkgs.lib.genAttrs systems (
+          system:
+          f (
+            import nixpkgs {
+              inherit system;
+              config.allowUnfreePredicate = pkg: builtins.elem (nixpkgs.lib.getName pkg) unfree;
+            }
+          )
+        );
     in
     {
       # `nix profile install github:verchalent/uzume` puts everything on PATH,
@@ -33,6 +45,7 @@
           ]
           ++ (with pkgs; [
             # Extra tools for this toolbox go here.
+            vscode # testing how GUI apps behave in the toolbox
           ]);
         };
       });
